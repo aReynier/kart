@@ -5,10 +5,11 @@
 
 LeFresnoy's data server.
 
-## Présentation du Fresnoy
+## Présentation Le Fresnoy
+Le Fresnoy - Studio national des arts contemporains est une institution de formation, de production et de diffusion artistiques, audiovisuelles et numériques. L’objectif du Studio national est de permettre à de jeunes créateurs venus du monde entier, de réaliser des œuvres avec des moyens techniques professionnels et dans un large décloisonnement des différents moyens d’expression. Le champ de travail, théorique et pratique, est celui de tous les langages audiovisuels sur les supports traditionnels, argentiques et électroniques (photographie, cinéma et vidéo) comme sur ceux de la création numérique. 
 
 ## Description de Kart
-Kart est la base de données du Fresnoy, elle comporte des informations sur les artistes ainsi que leurs oeuvres.
+**Kart** est la base de données de **Le Fresnoy**, elle comporte des informations sur les artistes ainsi que leurs oeuvres.
 
 ## Technologies employées
 - Python v3.8
@@ -50,7 +51,7 @@ source kart-env/bin/activate
 ```
 
 ### 3 - Django
-Il faut à présent installer Django dans l'environnement que nous venons de créer
+A présent, installer Django dans l'environnement que nous venons de créer
 ```
 python -m pip install Django
 ```
@@ -62,9 +63,9 @@ pip install -r requirements.txt
 ```
 
 ### 5 - PostgreSQL
-#### 5.1 - Création nde la base de données
-Créer une base de données PostgresSQL,
-Pour cela, une fois entré dans dans le psql de PostgreSQL:
+#### 5.1 - Création de la base de données
+Créer une base de données PostgresSQL.
+Pour cela, une fois entré dans dans le **psql** de PostgreSQL:
 
 Créer le futur propriétaire de la base de données
 ```
@@ -84,15 +85,15 @@ GRANT ALL PRIVILEGES ON DATABASE ma_base_de_donnees TO mon_utilisateur;
 sudo -u mon_utilisateur psql -h localhost -d ma_base_de_donnees
 ```
 
-- Si vous avez un script de base de données, vous pouvez lancer la commande suivante:
+- Si vous disposez d'un fichier de données, vous pouvez l'importer au moyen de la commande suivante:
 ```
-psql -h localhost -d ma_base_de_donnees -U mon_utilisateur -W < /chemin/vers/le/script
+psql -h localhost -d ma_base_de_donnees -U mon_utilisateur -W < /chemin/vers/le/fichier/de/donnees
 ```
 
-#### 5.2 - Définition de la base de données dans django
-Tout d'abord, dupliquer le fichier site_settings.py.dev et le renommer site_settings.py
+#### 5.2 - Choix de la base de données dans django
+Tout d'abord, dupliquer le fichier **site_settings.py.dev** et le renommer **site_settings.py**
 
-Ensuite, dans le fichier site_settings.py, au niveau des paramètres DATABASE, au lieu de ce code:
+Ensuite, dans le fichier **site_settings.py**, au niveau des paramètres **DATABASES**, au lieu de ce code:
 ```
 DATABASES = {
     'default': {
@@ -124,7 +125,7 @@ DATABASES = {
     }
 }
 ```
-Ensuite, pour ajouter le service. Aller à la racine de votre dossier ou de votre dossier user, trouver ou créer le fichier **.pg_service.conf ** et ajouter le service en modifiant ce fichier:
+Ensuite, pour ajouter le service. Aller à la racine de votre dossier ou de votre dossier user, trouver ou créer le fichier **.pg_service.conf** et ajouter le service en modifiant ce fichier:
 ```
 [django_kart_service]
 host=localhost
@@ -133,6 +134,8 @@ dbname=ma_base_de_donnees
 password=mon_mot_de_passe
 port=5432
 ```
+*Note:* Il est également possible, plutot que d'ajouter ce service, d'intégrer son contenu directement dans le **DATABASES** de **site_settings.py**
+
 De retour dans le projet Django, faire les migrations de python
 ```
 python manage.py migrate
@@ -147,4 +150,14 @@ python manage.py runserver
 ## Fonctionnalités
 
 ## Contribuer
-- git flow
+Toute contribution, qu'elle soit grande ou petite, est la bienvenue. Merci d'avance de nous aider dans l'amélioration de ce projet!
+
+### Comment contribuer?
+1. Réaliser un fork du projet
+2. Initaliser gitflow
+3. Travailler sur votre contribution dans une feature
+4. Employer la convention de nommage Angular pour vos commit: https://www.conventionalcommits.org/en/v1.0.0-beta.4/
+5. Terminer votre feature
+6. Pusher sur votre dépôt
+7. Lancer une pull request
+8. Retravailler votre contribution si besoin jusqu'à validation de votre contribution
