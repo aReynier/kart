@@ -40,6 +40,8 @@ Le Fresnoy's data server.
 [Le dépôt de Kartel](https://github.com/Fresnoy/kartel)
 
 ## :rocket: Démarrage
+Si besoin, démarrer [l'environnement virtuel](#2---environnement-virtuel) au péalable.
+
 Pour lancer l'application, employer la commande suivante:
 ```
 python manage.py runserver
@@ -68,7 +70,7 @@ Accessible en local depuis `http://127.0.0.1:8000/graphql`, elle permet de consu
     - Lié à une production
 - Les étudiants, classés par cursus
 - Les artistes
-    - Dont les artistes professeurs
+    - étudiants, professeurs etc.
 - Des collectifs d'artistes
 - Des organisations liées au Fresnoy
 
@@ -116,10 +118,10 @@ Les évènements dans lesquels les oeuvres sont passées sont également répert
 
 Pour chaque évènement sont notés la période ainsi que le lieu.
 
-Les parcours artistiques sont aussi sauvegardés.
+Les parcours pédagogiques sont aussi sauvegardés.
 
 ### Les diffusions et les récompenses:
-Les diffusion peuvent être:
+Les diffusions peuvent être:
 - Mondiales
 - Internationales
 - Nationales
@@ -138,14 +140,7 @@ Les récompenses peuvent être:
 
 ## :wrench: Installation
 ### 1 - Python
-Tout d'abord, installer la version 3.8 de python
-```
-sudo add-apt-repository ppa:deadsnakes/ppa
-```
-
-```
-sudo apt install python3.8
-```
+Installer la version 3.8 de Python
 
 ### 2 - environnement virtuel
 Créer un environnement virtuel avec la version 3.8 de Python, par exemple avec venv
@@ -162,95 +157,14 @@ Pour activer cet environnement virtuel
 source kart-env/bin/activate 
 ```
 
-### 3 - Django
-A présent, installer Django dans l'environnement que nous venons de créer
-```
-python -m pip install Django
-```
-
-### 4 - Installation des dépendances
+### 3 - Installation des dépendances
 Il est nécessaire d'installer les dépendances listées dans le fichier **requirements.txt**
 ```
 pip install -r requirements.txt
 ```
 
-### 5 - PostgreSQL
-#### 5.1 - Création de la base de données
-Créer une base de données PostgresSQL.
-Pour cela, une fois entré dans dans le **psql** de PostgreSQL:
-
-Créer le futur propriétaire de la base de données
-```
-CREATE USER mon_utilisateur WITH PASSWORD 'mon_mot_de_passe';
-```
-Créer la base de donnée et l'assigner à l'utilisateur nouvellement créé
-```
-CREATE DATABASE ma_base_de_donnees OWNER mon_utilisateur;
-```
-Donner les privilèges de la base de données à l'utilisateur
-```
-GRANT ALL PRIVILEGES ON DATABASE ma_base_de_donnees TO mon_utilisateur;
-```
-La base de données est à présent créée et associée à son propriétaire
-
-- Si vous souhaitez vous connecter
-```
-sudo -u mon_utilisateur psql -h localhost -d ma_base_de_donnees
-```
-
-- Si vous disposez d'un fichier de données, vous pouvez l'importer au moyen d'une commande similaire:
-```
-psql -h localhost -d ma_base_de_donnees -U mon_utilisateur -W < /chemin/vers/le/fichier/de/donnees
-```
-
-#### 5.2 - Choix de la base de données dans django
-Tout d'abord, dupliquer le fichier **site_settings.py.dev** et le renommer **site_settings.py**
-
-Ensuite, dans le fichier **site_settings.py**, au niveau des paramètres **DATABASES**, au lieu de ce code:
-```
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'TEST': {
-            'MIRROR': 'test'
-        }
-    },
-    'test': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "test.db.pg",
-    }
-}
-```
-
-le modifier par le code suivant:
-```
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'OPTIONS': {
-            'service': 'django_kart_service',
-        },
-    },
-    'test': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': "test.db.pg",
-    }
-}
-```
-Ensuite, pour ajouter le service. Aller à la racine de votre dossier ou de votre dossier user, trouver ou créer le fichier **.pg_service.conf** et ajouter le service en modifiant ce fichier:
-```
-[django_kart_service]
-host=localhost
-user=mon_utilisateur
-dbname=ma_base_de_donnees
-password=mon_mot_de_passe
-port=5432
-```
-> [!TIP]
-> Il est également possible, plutot que d'ajouter ce service, d'intégrer son contenu directement dans le **DATABASES** de **site_settings.py**
-
-De retour dans le projet Django, faire les migrations de python
+### 4 - Les migrations
+Effectuer une première migration des données
 ```
 python manage.py migrate
 ```
@@ -262,13 +176,11 @@ Toute contribution, qu'elle soit grande ou petite, est la bienvenue. Merci d'ava
 
 ### Comment contribuer?
 1. Réaliser un fork du dépôt principal du projet: [dépôt du projet](https://github.com/Fresnoy/kart)
-2. Initaliser gitflow
-3. Travailler sur votre contribution dans une feature
-4. Employer la convention de nommage **Conventional commits** pour vos commit: [documentation de conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/)
-5. Terminer votre feature
-6. Pusher sur votre dépôt
-7. Lancer une pull request
-8. Retravailler votre contribution si besoin jusqu'à validation de votre contribution
+2. Travailler sur votre contribution
+3. Employer la convention de nommage **Conventional commits** pour vos commit: [documentation de conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/)
+4. Pusher sur votre dépôt
+5. Lancer une pull request
+6. Retravailler votre contribution si besoin jusqu'à validation de celle-ci
 
 ## :page_with_curl: Licence
  licence AGPL-3.0 - [Détails de la licence](https://github.com/Fresnoy/kart?tab=AGPL-3.0-1-ov-file#readme)
