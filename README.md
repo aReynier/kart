@@ -1,4 +1,4 @@
-# Kart
+# Kart V3
 
 [![Build Status](https://travis-ci.org/Fresnoy/kart.svg?branch=master)](https://travis-ci.org/Fresnoy/kart)
 ![Python](https://img.shields.io/badge/Python-3.8-green?style=flat)
@@ -25,9 +25,10 @@ Le Fresnoy's data server.
 - [Installation](#wrench-installation)
 - [Contribuer](#handshake-contribuer)
 - [Licence](#page_with_curl-licence)
+- [Contact](#email-contact)
 
 ## :house: Le Fresnoy
-**Le Fresnoy - Studio national des arts contemporains** est une **institution** de **formation**, de **production** et de **diffusion artistiques**, **audiovisuelles** et **numériques**. L’objectif du Studio national est de permettre à de **jeunes créateurs** venus **du monde entier**, de réaliser des **œuvres** avec des **moyens techniques professionnels** et dans un large **décloisonnement** des différents **moyens d’expression**. Le champ de travail, théorique et pratique, est celui de **tous les langages audiovisuels** sur les **supports traditionnels**, **argentiques** et **électroniques** (photographie, cinéma et vidéo) comme sur ceux de la **création numérique**. 
+**Le Fresnoy - Studio national des arts contemporains** est une **institution** de **formation**, de **production** et de **diffusion artistiques**, **audiovisuelles** et **numériques**. L’objectif du Studio national est de permettre à de **jeunes créateurs** venus **du monde entier**, de réaliser des **œuvres** avec des **moyens techniques professionnels** et dans un large **décloisonnement** des différents **moyens d’expression**. Le champ de travail, théorique et pratique, est celui de **tous les langages audiovisuels** sur les **supports traditionnels**, **argentiques** et **électroniques** (photographie, cinéma et vidéo) comme sur ceux de la **création numérique**.
 
 [Le site web du Fresnoy](https://www.lefresnoy.net/)
 
@@ -36,11 +37,13 @@ Le Fresnoy's data server.
 
 **Kart** sert principalement pour **Kartel**, l'interface des données du **Fresnoy**.
 
+Ceci est la **version 3** de Kart.
+
 [Le dépôt de Kart](https://github.com/Fresnoy/kart) \
 [Le dépôt de Kartel](https://github.com/Fresnoy/kartel)
 
 ## :rocket: Démarrage
-Si besoin, démarrer [l'environnement virtuel](#2---environnement-virtuel) au péalable.
+Si besoin, démarrer [l'environnement virtuel](#2---environnement-virtuel) au préalable.
 
 Pour lancer l'application, employer la commande suivante:
 ```
@@ -52,97 +55,38 @@ python manage.py runserver
 - Django v4.1
 - Django graphene v3.1
 - Django graphQL JWT v0.3
-- Psycopg v2.9
+- Psycopg v2.9 (si base de données PostgreSQL)
 - Elasticsearch v7.15
-- PostgreSQL
 
 ## :unlock: Prérequis
-- Python
-- PostgreSQL
+Sur un environnement linux de type Debian:
+- Python3
+- Venv ou tout autre librairie d'environnement virtuel
+- Psycopg2 (si base de données PostgreSQL)
 
 ## :gear: Fonctionnalités
-Il s'agit d'une **API** en **graphQL**.
-Accessible en local depuis `http://127.0.0.1:8000/graphql`, elle permet de consulter les données suivantes:
+Il s'agit d'une **API** en **graphQL**. Elle permet de consulter les données suivantes:
 
-### Des informations concernant les personnes liées au Fresnoy:
-- Le personnel du Fresnoy
-    - Permanent
-    - Lié à une production
-- Les étudiants, classés par cursus
-- Les artistes
-    - étudiants, professeurs etc.
-- Des collectifs d'artistes
-- Des organisations liées au Fresnoy
+- Les personnes liées au Fresnoy, notamment les artistes.
+- Les productions du Fresnoy, classées par type:
+    - Les films
+    - Les installations
+    - Les performances
 
-On y retrouve pour chaque type de personnes des renseignements les concernant.
+Chaque production dispose d'une légende telle qu'on pourrait la lire sur un cartel.
 
-En plus de ces données commune, d'autres sont spécifiques au type de personnes:
-- Pour les artistes, biographie, pseudonyme et liens vers leur présence en ligne.
-- Pour les organisations, une description.
-
-### Les productions du Fresnoy, classées par type:
-- Les films
-- Les installations
-- Les performances
-
-Chaque production dispose d'une légende telle qu'on pourrait la lire sur un cartel:
-- Titre
-- Date
-- Image
-- Description
-- Collaborateurs
-- Partenaires
-- Auteur
-- Remerciements
-- Un ensemble de galeries photo classées par thématique:
-    - Le processus de création
-    - La médiation
-    - L'œuvre *in situ*
-    - La présence de l'œuvre dans la presse
-    - Le teaser de l'œuvre
-
-En plus de ces informations communes, d'autres informations sont spécifiques au médium:
-- Pour le film, sa durée, son support, son format, ses choix de couleur, son genre et son lieu.
-- Pour l'installation, sa description technique et son genre.
-
-Sont également présentes des explications concernant les tâches de chaque corps de métier au sein d'une production.
-
-Les évènements dans lesquels les oeuvres sont passées sont également répertoriés:
-- Les festivals
-- Les compétitions
-- Les projections
-- Les vernissages
-- Les fêtes
-- Les workshop
-- Les soirées
-
-Pour chaque évènement sont notés la période ainsi que le lieu.
-
-Les parcours pédagogiques sont aussi sauvegardés.
-
-### Les diffusions et les récompenses:
-Les diffusions peuvent être:
-- Mondiales
-- Internationales
-- Nationales
-
-Est également noté lorsque les oeuvres sont nominées lors d'une compétition
-
-Les récompenses peuvent être:
-- Individuelles
-- De groupe
-- Liées à la carrière
-- Autres
-
-### Ce qui est relatif à l'école, son administration
-- Les promotions
-- Les candidatures d'étudiants
+Sont également indiqués les évènements dans lesquels les productions sont passées, les diffusions et récompenses.
 
 ## :wrench: Installation
-### 1 - Python
+### 1 - Cloner ce dépôt
+
+### 2 - site_settings
+Copier le fichier **site_settings.py.dev** et le renommer **site_settings.py**
+
+### 3 - Python
 Installer la version 3.8 de Python
 
-### 2 - environnement virtuel
+### 4 - environnement virtuel
 Créer un environnement virtuel avec la version 3.8 de Python, par exemple avec venv
 ```
 sudo apt install python3.8-venv
@@ -157,13 +101,13 @@ Pour activer cet environnement virtuel
 source kart-env/bin/activate 
 ```
 
-### 3 - Installation des dépendances
+### 5 - Installation des dépendances
 Il est nécessaire d'installer les dépendances listées dans le fichier **requirements.txt**
 ```
 pip install -r requirements.txt
 ```
 
-### 4 - Les migrations
+### 6 - Les migrations
 Effectuer une première migration des données
 ```
 python manage.py migrate
@@ -184,3 +128,7 @@ Toute contribution, qu'elle soit grande ou petite, est la bienvenue. Merci d'ava
 
 ## :page_with_curl: Licence
  licence AGPL-3.0 - [Détails de la licence](https://github.com/Fresnoy/kart?tab=AGPL-3.0-1-ov-file#readme)
+
+## :email: Contact
+- [McRo](https://github.com/McRo)
+- [McAlyster](https://github.com/McAlyster)
