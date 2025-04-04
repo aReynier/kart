@@ -1,8 +1,8 @@
 # Kart V3
 
 [![Build Status](https://travis-ci.org/Fresnoy/kart.svg?branch=master)](https://travis-ci.org/Fresnoy/kart)
-![Python](https://img.shields.io/badge/Python-3.8-green?style=flat)
-[![License](https://img.shields.io/badge/License-AGPL--3.0-green?style=flat&link=https://github.com/Fresnoy/kart?tab=AGPL-3.0-1-ov-file#readme)](https://github.com/Fresnoy/kart?tab=AGPL-3.0-1-ov-file#readme)
+![GitHub top language](https://img.shields.io/github/languages/top/Fresnoy/kart)
+![GitHub License](https://img.shields.io/github/license/Fresnoy/kart)
 
 ```
      _____
