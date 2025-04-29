@@ -8,7 +8,9 @@ from production.tests.factories import (
     EventFactory,
     PerformanceFactory,
     ArtworkFactory,
-    KeywordFactory
+    KeywordFactory,
+    FilmFactory,
+    InstallationFactory
 )
 
 from people.tests.factories import ArtistFactory
@@ -171,3 +173,183 @@ class TestGQLPages(TestCase):
         result = schema.execute(query)
 
         assert result.data['artworks'][0]['productionDate'] is not None
+
+    # following test about artworks filters
+    def test_query_with_artworks_production_year_filter(self):
+        artwork = ArtworkFactory(production_date="2019-01-01")
+        artwork.save()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        belongProductionYear: "2019"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['productionDate'] == "2019-01-01"
+
+    def test_query_with_artworks_keyword_filters(self):
+        artwork = ArtworkFactory()
+        firstKeyword = KeywordFactory(name='mythe')
+        secondKeyword = KeywordFactory(name='société')
+        artwork.keywords.add(firstKeyword, secondKeyword)
+        artwork.save()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        hasKeywordName: "mythe"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['keywords'][0]['name'] == "mythe"
+
+    def test_query_with_two_artworks_filters(self):
+        artwork = ArtworkFactory(production_date="2019-01-01")
+        firstKeyword = KeywordFactory(name='mythe')
+        secondKeyword = KeywordFactory(name='société')
+        artwork.keywords.add(firstKeyword, secondKeyword)
+        artwork.save()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        hasKeywordName: "mythe"\
+                        belongProductionYear: "2019"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['productionDate'] == "2019-01-01"
+
+    def test_query_with_artworks_type_film_filters(self):
+        FilmFactory()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        hasType: "Film"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['type'] == "Film"
+
+    def test_query_with_artworks_type_installation_filters(self):
+        InstallationFactory()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        hasType: "Installation"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['type'] == "Installation"
+
+    def test_query_with_artworks_type_performance_filters(self):
+        PerformanceFactory()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        hasType: "Performance"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['type'] == "Performance"
+
+    def test_query_with_artworks_wrong_type_filters(self):
+        FilmFactory()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        hasType: "coucou"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'] == []
+
+    # Find out why this test doesn't work
+    def test_query_with_all_artworks_filters(self):
+        film = FilmFactory(production_date="2019-01-01")
+        firstKeyword = KeywordFactory(name='mythe')
+        secondKeyword = KeywordFactory(name='société')
+        film.keywords.add(firstKeyword, secondKeyword)
+        film.save()
+
+        query = 'query ArtworksFilters {\
+                    artworksWithFilter(\
+                        belongProductionYear: "2019"\
+                        hasKeywordName: "mythe"\
+                        hasType: "Film"\
+                    ) {\
+                        keywords {\
+                            name\
+                        }\
+                        productionDate\
+                        type\
+                    }\
+                }'
+
+        schema = graphene.Schema(query=Query)
+        result = schema.execute(query)
+
+        assert result.data['artworksWithFilter'][0]['productionDate'] == "2019-01-01"
+        assert result.data['artworksWithFilter'][0]['keywords'][0]['name'] == "mythe"
+        assert result.data['artworksWithFilter'][0]['type'] == "Film"

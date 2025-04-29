@@ -373,6 +373,11 @@ class Query(graphene.ObjectType):
     artwork = graphene.Field(ArtworkType, id=graphene.Int())
     artworks = graphene.List(ArtworkInterface, title=graphene.String(required=False))
 
+    artworks_with_filter = graphene.List(
+        ArtworkInterface, hasKeywordName=graphene.List(graphene.String, required=False),
+        belongProductionYear=graphene.String(required=False),
+        hasType=graphene.String(required=False))
+
     film = graphene.Field(FilmType, id=graphene.Int())
     films = graphene.List(FilmType)
 
@@ -414,6 +419,7 @@ class Query(graphene.ObjectType):
         if id is not None:
             return Production.objects.get(pk=id)
         return None
+    
 
     # Artwork
     def resolve_artworks(root, info, **kwargs):
@@ -430,6 +436,30 @@ class Query(graphene.ObjectType):
         if id is not None:
             return Artwork.objects.get(pk=id)
         return None
+    
+    def resolve_artworks_with_filter(root, info, hasKeywordName=None, belongProductionYear=None, hasType=None, **kwargs):
+        artworks_with_filter = Artwork.objects.all()
+
+        if hasKeywordName:
+            artworks_with_filter = artworks_with_filter.filter(
+                keywords__name__in=hasKeywordName)
+        if belongProductionYear:
+            artworks_with_filter = artworks_with_filter.filter(
+                production_date__istartswith=belongProductionYear)
+        if hasType:
+            if hasType == 'Film':
+                artworks_with_filter = artworks_with_filter.filter(
+                    film__isnull=False)
+            elif hasType == 'Performance':
+                artworks_with_filter = artworks_with_filter.filter(
+                    performance__isnull=False)
+            elif hasType == 'Installation':
+                artworks_with_filter = artworks_with_filter.filter(
+                    installation__isnull=False)
+            else:
+               artworks_with_filter = artworks_with_filter.filter(id__in=[]) 
+        return artworks_with_filter
+
 
     # Film
     def resolve_films(root, info, **kwargs):
