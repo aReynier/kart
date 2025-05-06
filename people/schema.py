@@ -1,6 +1,8 @@
 import re
 import graphene
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
+import django_filters
 
 from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
@@ -344,6 +346,11 @@ class ArtistType(UserType):
 
     teacher = graphene.Field('school.schema.TeachingArtistType')
 
+# Dedicated to pagination, copy some elements in order to separate logic
+class ArtistPagination(django_filters.FilterSet):
+    class Meta:
+        model = Artist
+        fields = []
 
 class StaffType(UserType):
     class Meta:
@@ -361,6 +368,8 @@ class Query(graphene.ObjectType):
 
     artist = graphene.Field(ArtistType, id=graphene.Int())
     artists = graphene.List(ArtistType, name=graphene.String(required=False))
+
+    artists_pagination = DjangoFilterConnectionField(ArtistType, filterset_class=ArtistPagination, name=graphene.String(required=False))
 
     profile = graphene.Field(FresnoyProfileType, id=graphene.Int())
     profiles = graphene.List(FresnoyProfileType)
@@ -399,6 +408,18 @@ class Query(graphene.ObjectType):
         if id is not None:
             return Artist.objects.get(pk=id)
         return None
+
+    def resolve_artists_pagination(self, info, **kwargs):
+        name = kwargs.get('name')
+        artists = Artist.objects.all()
+        if name != "":
+            # Item.objects.filter(Q(creator=owner) | Q(moderated=False))
+            artists = Artist.objects.annotate(name=Concat(F('user__first_name'), Value(' '), F('user__last_name')))\
+                                    .filter(Q(nickname__icontains=name) |
+                                            Q(user__first_name__icontains=name) |
+                                            Q(user__last_name__icontains=name) |
+                                            Q(name__icontains=name))
+        return artists
 
     def resolve_profiles(root, info, **kwargs):
         return FresnoyProfile.objects.all()

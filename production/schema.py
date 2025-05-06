@@ -1,6 +1,8 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.converter import convert_django_field
+from graphene_django.filter import DjangoFilterConnectionField
+import django_filters
 
 from django.db.models import Q
 
@@ -226,6 +228,10 @@ class ArtworkType(ProductionType):
     def convert_field_to_string(field, registry=None):
         return graphene.List(graphene.String, source='get_tags')
 
+class ArtworkPagination(django_filters.FilterSet):
+    class Meta:
+        model = Artwork
+        fields = []
 
 class ArtworkPanoType(ArtworkType):
     class Meta:
@@ -377,6 +383,8 @@ class Query(graphene.ObjectType):
         ArtworkInterface, hasKeywordName=graphene.List(graphene.String, required=False),
         belongProductionYear=graphene.String(required=False),
         hasType=graphene.String(required=False))
+    
+    artworks_pagination = DjangoFilterConnectionField(ArtworkType, filterset_class=ArtworkPagination, title=graphene.String(required=False))
 
     film = graphene.Field(FilmType, id=graphene.Int())
     films = graphene.List(FilmType)
@@ -460,6 +468,14 @@ class Query(graphene.ObjectType):
                artworks_with_filter = artworks_with_filter.filter(id__in=[]) 
         return artworks_with_filter
 
+    def resolve_artworks_pagination(self, info, **kwargs):
+        title = kwargs.get('title')
+        if title:
+            return Artwork.objects.filter(Q(title__icontains=title) |
+                                          Q(former_title__icontains=title) |
+                                          Q(subtitle__icontains=title))
+        else:
+            return Artwork.objects.all()
 
     # Film
     def resolve_films(root, info, **kwargs):
